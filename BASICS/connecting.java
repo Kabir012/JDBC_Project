@@ -1,3 +1,5 @@
+package BASICS;
+
 import java.sql.*;
 
 public class connecting {
