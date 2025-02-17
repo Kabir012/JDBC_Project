@@ -145,4 +145,50 @@ public class hotel_reservation {
         }
     }
 
+    public static void updateReservation(Connection con, Scanner sc) {
+        System.out.println("Enter Reservation ID to update : ");
+        int reservation_id = sc.nextInt();
+        if (!reservationExsists(con, reservation_id)) {
+            System.out.println("Reservation doesn't exsist!");
+            return;
+        }
+        System.out.println("Enter new Guest name: ");
+        String guest_name = sc.nextLine();
+        System.out.println("Enter new Room number: ");
+        int room_no = sc.nextInt();
+        System.out.println("Enter new Contact number: ");
+        String contact_number = sc.nextLine();
+
+        String query = "UPDATE TABLE reservations SET guest_name = " + guest_name + ", room_no = " + room_no
+                + ",contact_number = " + contact_number + " WHERE reservation_id = " + reservation_id;
+        try {
+            Statement stmt = con.createStatement();
+
+            int rowsAffected = stmt.executeUpdate(query);
+            if (rowsAffected > 0) {
+                System.out.println("Updation succesfull, and " + rowsAffected + " Rows affected!");
+            } else {
+                System.out.println("Updation Failed!");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static boolean reservationExsists(Connection con, int reservation_id) {
+        try {
+            String query = "SELECT reservation_id FROM reservations WHERE reservation_id = " + reservation_id;
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            if (rs.next()) {
+                return true;
+            }
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }
