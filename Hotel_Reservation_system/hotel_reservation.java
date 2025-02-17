@@ -90,7 +90,29 @@ public class hotel_reservation {
                 System.out.println("Reservation Failed!");
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
+    }
+
+    public void viewReservations(Connection con){
+        String query = "SELECT reservation_id , guest_name, room_no, contact_number , reservation_date FROM reservations";
+        try{
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            while(rs.next()){
+                int reservation_id = rs.getInt("reservation_id");
+                String guest_name = rs.getString("guest_name");
+                int room_no = rs.getInt("guest_name");
+                String reservation_date = rs.getTimestamp("reservation_date").toString();
+
+                System.out.println();
+                System.out.println("-------------------------------------");
+                System.out.println("ID: " + reservation_id);
+                System.out.println();
+            }
+
+        }
+
     }
 }
