@@ -176,6 +176,28 @@ public class hotel_reservation {
 
     }
 
+    public static void deleteReservation(Connection con, Scanner sc) {
+        System.out.println("Enter reservation ID to delete : ");
+        int reservation_id = sc.nextInt();
+
+        if (!reservationExsists(con, reservation_id)) {
+            System.out.println("Reservation not found for ID " + reservation_id);
+            return;
+        }
+        String query = "DELETE FROM reservations WHERE reservation_id = " + reservation_id;
+        try {
+            Statement stmt = con.createStatement();
+            int rowsAffected = stmt.executeUpdate(query);
+            if (rowsAffected > 0) {
+                System.out.println("Deletion Successfull, and " + rowsAffected + " Rows Affected!");
+            } else {
+                System.out.println("Deletion failed!!");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static boolean reservationExsists(Connection con, int reservation_id) {
         try {
             String query = "SELECT reservation_id FROM reservations WHERE reservation_id = " + reservation_id;
@@ -189,6 +211,10 @@ public class hotel_reservation {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public static void exit() {
+
     }
 
 }
