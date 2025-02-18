@@ -32,11 +32,11 @@ public class hotel_reservation {
                 Scanner sc = new Scanner(System.in);
                 System.out.println("1. Reserve a room");
                 System.out.println("2. View Reservations");
-                System.out.println("3. Get Reservations");
+                System.out.println("3. Get Room number");
                 System.out.println("4. Update Reservations");
                 System.out.println("5. Delete Reservations");
                 System.out.println("0. Exit");
-                System.out.println("Choose an option: ");
+                System.out.print("Choose an option: ");
                 int choice = sc.nextInt();
                 switch (choice) {
                     case 1:
@@ -71,15 +71,17 @@ public class hotel_reservation {
     }
 
     public static void reserveRoom(Connection con, Scanner sc) {
+        sc.nextLine();
         System.out.println("Enter your name: ");
         String name = sc.nextLine();
         System.out.println("Enter room number: ");
         int roomNo = sc.nextInt();
+        sc.nextLine();
         System.out.println("Enter your contact number: ");
         String contactNo = sc.nextLine();
 
-        String query = "INSERT INTO reservations (guest_name,room_no,contact_number)" +
-                "VALUES (' " + name + "'," + roomNo + " ,' " + contactNo + " ')";
+        String query = "INSERT INTO reservations (guest_name, room_no, contact_number) " +
+                "VALUES ('" + name + "', " + roomNo + ", '" + contactNo + "');";
 
         try {
             Statement stmt = con.createStatement();
@@ -103,7 +105,7 @@ public class hotel_reservation {
             while (rs.next()) {
                 int reservation_id = rs.getInt("reservation_id");
                 String guest_name = rs.getString("guest_name");
-                int room_no = rs.getInt("guest_name");
+                int room_no = rs.getInt("room_no");
                 String reservation_date = rs.getTimestamp("reservation_date").toString();
 
                 System.out.println();
@@ -124,11 +126,13 @@ public class hotel_reservation {
     public static void getRoomNumber(Connection con, Scanner sc) {
         System.out.println("Enter reservation ID: ");
         int reservation_id = sc.nextInt();
+        sc.nextLine();
         System.out.println("Enter Guest Name: ");
         String guest_name = sc.nextLine();
 
-        String query = "SELECT room_no FROM reservations WHERE reservation_id = " + reservation_id + "AND guest_name = "
-                + guest_name;
+        String query = "SELECT room_no FROM reservations WHERE reservation_id = " + reservation_id +
+                " AND guest_name = '" + guest_name + "'";
+
         try {
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(query);
@@ -148,19 +152,22 @@ public class hotel_reservation {
     public static void updateReservation(Connection con, Scanner sc) {
         System.out.println("Enter Reservation ID to update : ");
         int reservation_id = sc.nextInt();
-        if (!reservationExsists(con, reservation_id)) {
+        if (!reservationExists(con, reservation_id)) {
             System.out.println("Reservation doesn't exsist!");
             return;
         }
+        sc.nextLine();
         System.out.println("Enter new Guest name: ");
         String guest_name = sc.nextLine();
         System.out.println("Enter new Room number: ");
         int room_no = sc.nextInt();
+        sc.nextLine();
         System.out.println("Enter new Contact number: ");
         String contact_number = sc.nextLine();
 
-        String query = "UPDATE TABLE reservations SET guest_name = " + guest_name + ", room_no = " + room_no
-                + ",contact_number = " + contact_number + " WHERE reservation_id = " + reservation_id;
+        String query = "UPDATE reservations SET guest_name = '" + guest_name + "', room_no = " + room_no +
+                ", contact_number = '" + contact_number + "' WHERE reservation_id = " + reservation_id;
+
         try {
             Statement stmt = con.createStatement();
 
@@ -180,7 +187,7 @@ public class hotel_reservation {
         System.out.println("Enter reservation ID to delete : ");
         int reservation_id = sc.nextInt();
 
-        if (!reservationExsists(con, reservation_id)) {
+        if (!reservationExists(con, reservation_id)) {
             System.out.println("Reservation not found for ID " + reservation_id);
             return;
         }
@@ -198,7 +205,7 @@ public class hotel_reservation {
         }
     }
 
-    public static boolean reservationExsists(Connection con, int reservation_id) {
+    public static boolean reservationExists(Connection con, int reservation_id) {
         try {
             String query = "SELECT reservation_id FROM reservations WHERE reservation_id = " + reservation_id;
             Statement stmt = con.createStatement();
@@ -213,8 +220,17 @@ public class hotel_reservation {
         }
     }
 
-    public static void exit() {
+    public static void exit() throws InterruptedException {
+        System.out.print("Exiting");
 
+        int i = 5;
+        while (i > 0) {
+            System.out.print(".");
+            Thread.sleep(450);
+            i--;
+        }
+        System.out.println();
+        System.out.println("Thankyou for using Hotel Reservation System!");
     }
 
 }
